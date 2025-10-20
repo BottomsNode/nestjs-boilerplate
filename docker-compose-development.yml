@@ -1,0 +1,47 @@
+# =========================================================
+# Docker Compose: Postgres + pgAdmin
+# =========================================================
+services:
+  # -----------------------
+  # PostgreSQL Service
+  # -----------------------
+  postgres:
+    image: postgres:15
+    container_name: postgres_nestjs_boilerplate
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT}:5432"   # Host port → container port
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./docker/tmp/postgres:/var/lib/postgresql/data/
+    networks:
+      - nestjs-network
+
+  # -----------------------
+  # pgAdmin Service
+  # -----------------------
+  pg-admin:
+    image: dpage/pgadmin4:6.8
+    container_name: pg-admin_nestjs_boilerplate
+    restart: unless-stopped
+    ports:
+      - "${PGADMIN_PORT}:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - ./docker/tmp/pgadmin:/var/lib/pgadmin
+    networks:
+      - nestjs-network
+    depends_on:
+      - postgres
+
+# -----------------------
+# Network
+# -----------------------
+networks:
+  nestjs-network:
+    driver: bridge
