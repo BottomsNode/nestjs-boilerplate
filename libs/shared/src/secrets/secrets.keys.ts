@@ -3,22 +3,65 @@ import { join } from 'path';
 
 dotenv.config({ path: join(process.cwd(), 'src/environment/.env') });
 
-// Override with .env.prod if NODE_ENV is production
 if (process.env.NODE_ENV === 'production') {
-    dotenv.config({ path: join(process.cwd(), 'src/environment/.env.prod') });
+  dotenv.config({
+    path: join(process.cwd(), 'src/environment/.env.prod'),
+    override: true,
+  });
 }
 
-// Export constants
-export const PORT = process.env.PORT;
-export const DB_NAME = process.env.DB_NAME;
-export const DB_TYPE = process.env.DB_TYPE;
-export const DB_HOST = process.env.DB_HOST;
-export const DB_PORT = process.env.DB_PORT;
-export const DB_USERNAME = process.env.DB_USERNAME;
-export const DB_PASSWORD = process.env.DB_PASSWORD;
-export const SWAGGER_DOCS = process.env.SWAGGER_DOCS;
-export const jwtSecret = process.env.JWT_SECRET;
-export const NODE_ENV = process.env.NODE_ENV;
-export const SESSION_SECRET = process.env.SESSION_SECRET;
-export const API_VERSION = process.env.API_VERSION;
-export const PUBLIC_KEY = 'isPublic';
+function getEnvVariable(key: string): string {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`Environment variable ${key} is not defined`);
+  }
+  return value;
+}
+
+const PORT = parseInt(getEnvVariable('PORT'), 10);
+const DB_NAME = getEnvVariable('DB_NAME');
+const DB_TYPE = getEnvVariable('DB_TYPE') as 'postgres' | 'mysql' | 'mongodb';
+const DB_HOST = getEnvVariable('DB_HOST');
+const DB_PORT = parseInt(getEnvVariable('DB_PORT'), 10);
+const DB_USERNAME = getEnvVariable('DB_USERNAME');
+const DB_PASSWORD = getEnvVariable('DB_PASSWORD');
+const SWAGGER_DOCS = getEnvVariable('SWAGGER_DOCS');
+const JWT_SECRET = getEnvVariable('JWT_SECRET');
+const NODE_ENV = getEnvVariable('NODE_ENV') as 'development' | 'production' | 'test';
+const SESSION_SECRET = getEnvVariable('SESSION_SECRET');
+const API_VERSION = getEnvVariable('API_VERSION');
+const PUBLIC_KEY = getEnvVariable('PUBLIC_KEY');
+const LOG_LEVEL = getEnvVariable('LOG_LEVEL');
+const SENTRY_DSN = getEnvVariable('SENTRY_DSN');
+
+export const configVariables = {
+  port: PORT,
+  database: {
+    name: DB_NAME,
+    type: DB_TYPE,
+    host: DB_HOST,
+    port: DB_PORT,
+    username: DB_USERNAME,
+    password: DB_PASSWORD,
+  },
+  swagger: {
+    docs: SWAGGER_DOCS,
+  },
+  jwt: {
+    secret: JWT_SECRET,
+  },
+  session: {
+    secret: SESSION_SECRET,
+  },
+  api: {
+    version: API_VERSION,
+  },
+  nodeEnv: NODE_ENV,
+  publicKey: PUBLIC_KEY,
+  sentry:{
+    dsn: SENTRY_DSN,
+  },
+  logger: {
+    level: LOG_LEVEL,
+  },
+} as const;

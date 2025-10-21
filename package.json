@@ -2,9 +2,9 @@
   "name": "nestjs-boilerplate",
   "version": "0.0.1",
   "description": "A scalable NestJS boilerplate with libs, modules, TypeORM, and PostgreSQL",
-  "author": "",
+  "author": "nestjs-boilerplate",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "lint": "eslint \"{src,libs,test}/**/*.ts\" --fix",
@@ -13,7 +13,7 @@
     "start:prod": "cross-env NODE_ENV=production node dist/main.js",
     "start:debug": "cross-env NODE_ENV=development nest start --debug --watch",
     "format": "prettier --write \"src/**/*.ts\" \"libs/**/*.ts\"",
-    "docker:up": "cross-env NODE_ENV=docker docker compose -f docker-compose-development.yml --env-file src/environment/.env.docker up -d --build",
+    "docker:up:db": "cross-env NODE_ENV=docker docker compose -f docker-compose-development.yml --env-file src/environment/.env.docker up -d --build",
     "docker:down": "docker compose -f docker-compose-development.yml down -v",
     "docker:logs": "docker compose -f docker-compose-development.yml logs -f",
     "migration:generate": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate -d ./src/database/data-source.ts ./src/database/migrations",
@@ -45,6 +45,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "swagger-ui-express": "^5.0.1",
+    "systeminformation": "^5.27.11",
     "typeorm": "^0.3.27"
   },
   "devDependencies": {

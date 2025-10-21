@@ -2,30 +2,35 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule } from '@nestjs/swagger';
 import { swaggerConfig } from './config/swagger.config';
-import { API_VERSION, GlobalExceptionsFilter, PORT, SWAGGER_DOCS } from '@shared';
+import { configVariables, GlobalExceptionsFilter } from '@shared';
+import { VersioningType, Logger as NestLogger } from '@nestjs/common';
+import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
-  // Create app with buffered logs
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
-  // Set global API prefix (versioning)`
-  app.setGlobalPrefix(`api/${API_VERSION}`);
+  const logger = app.get<Logger>(Logger);
+  app.useLogger(logger);
 
-  // Swagger setup
+  app.enableCors();
+
+  app.setGlobalPrefix(`api/v${configVariables.api.version}`);
+
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup(SWAGGER_DOCS, app, swaggerDocument);
+  SwaggerModule.setup(configVariables.swagger.docs, app, swaggerDocument);
 
-  // Global exception filter
   app.useGlobalFilters(new GlobalExceptionsFilter());
 
-  // Start server
-  await app.listen(PORT);
+  app.enableShutdownHooks();
 
-  const host = `http://localhost:${PORT}`;
-  console.log(`Application running at: ${host}/api/${API_VERSION}`);
-  console.log(`Swagger docs available at: ${host}/${SWAGGER_DOCS}`);
+  await app.listen(configVariables.port);
+
+  const host = `http://localhost:${configVariables.port}`;
+  logger.log(`Application running at: ${host}/api/v${configVariables.api.version}`);
+  logger.log(`Swagger docs available at: ${host}/${configVariables.swagger.docs}`);
 }
 
 bootstrap().catch((error) => {
   console.error('❌ Error starting application:', error);
+  process.exit(1);
 });

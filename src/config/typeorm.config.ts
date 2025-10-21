@@ -1,14 +1,14 @@
-import { DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_TYPE, DB_USERNAME, NODE_ENV } from '@shared';
 import { DataSource } from 'typeorm';
+import { configVariables } from '@shared';
 export const AppDataSource = new DataSource({
-  type: DB_TYPE as 'postgres',
-  host: DB_HOST,
-  port: Number(DB_PORT),
-  username: DB_USERNAME,
-  password: DB_PASSWORD,
-  database: DB_NAME,
+  type: configVariables.database.type,
+  host: configVariables.database.host,
+  port: configVariables.database.port,
+  username: configVariables.database.username,
+  password: configVariables.database.password,
+  database: configVariables.database.name,
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/../**/migrations/*{.ts,.js}'],
   migrationsRun: false,
-  logging: NODE_ENV === 'development',
+  logging: configVariables.nodeEnv === 'development',
 });
