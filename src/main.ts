@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { SwaggerModule } from '@nestjs/swagger';
 import { swaggerConfig } from './config/swagger.config';
 import { configVariables, GlobalExceptionsFilter } from '@shared';
-import { VersioningType, Logger as NestLogger } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
@@ -26,8 +25,12 @@ async function bootstrap() {
   await app.listen(configVariables.port);
 
   const host = `http://localhost:${configVariables.port}`;
-  logger.log(`Application running at: ${host}/api/v${configVariables.api.version}`);
-  logger.log(`Swagger docs available at: ${host}/${configVariables.swagger.docs}`);
+  logger.log(
+    `Application running at: ${host}/api/v${configVariables.api.version}`,
+  );
+  logger.log(
+    `Swagger docs available at: ${host}/${configVariables.swagger.docs}`,
+  );
 }
 
 bootstrap().catch((error) => {

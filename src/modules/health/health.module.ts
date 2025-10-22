@@ -4,9 +4,9 @@ import { HealthController } from './health.controller';
 import { LoggerModule } from '@modules/logger';
 
 @Module({
-    imports: [LoggerModule],
-    providers: [HealthService],
-    controllers: [HealthController],
-    exports: [HealthService],
+  imports: [LoggerModule],
+  providers: [HealthService],
+  controllers: [HealthController],
+  exports: [HealthService],
 })
-export class HealthModule { }
+export class HealthModule {}

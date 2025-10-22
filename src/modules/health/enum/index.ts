@@ -1,1 +1,1 @@
-export * from './e-health-check'
+export * from './e-health-check';

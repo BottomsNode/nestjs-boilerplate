@@ -1,98 +1,96 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🧩 Environment Configuration Guide
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This document explains the purpose and usage of each environment file in the project.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 📁 Environment Files Overview
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+| File | Purpose |
+|------|----------|
+| **.env** | Used for local development (connecting to local Postgres instance). |
+| **.env.docker** | Used when running the application inside Docker containers. |
+| **.example.env** | Template file for reference — should mirror `.env` but without sensitive data. |
 
-## Project setup
+---
 
-```bash
-$ yarn install
+## ⚙️ .env (Local Development)
+
+```env
+# ===========================
+# App Configuration
+# ===========================
+PORT=3535
+API_HOST=0.0.0.0
+NODE_ENV=development
+API_VERSION=1
+SWAGGER_DOCS=api-docs
+JWT_SECRET=key_name
+SESSION_SECRET=key_name
+LOG_LEVEL=debug
+PUBLIC_KEY=isPublic
+SENTRY_DSN=https://yourPublicKey@o123456.ingest.sentry.io/1234567
+
+# ===========================
+# Database Config (connect to Docker Postgres)
+# ===========================
+DB_TYPE=postgres
+DB_HOST=localhost
+DB_PORT=5432                   #(host:container = 6666:5432)
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=nestjs_boilerplate_db
 ```
 
-## Compile and run the project
+### 🧠 Notes
+- Used when running **NestJS locally** (not inside Docker).
+- Connects to Postgres via **localhost**.
+- Logs at `debug` level by default.
 
-```bash
-# development
-$ yarn run start
+---
 
-# watch mode
-$ yarn run start:dev
+## 🐳 .env.docker (Docker Environment)
 
-# production mode
-$ yarn run start:prod
+```env
+# ===========================
+# PostgreSQL Configuration (for Docker internal network)
+# ===========================
+POSTGRES_PORT=5432                 # INTERNAL container port (DO NOT USE HOST PORT INSIDE Docker)
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=nestjs_boilerplate_db
+
+# ===========================
+# pgAdmin Configuration
+# ===========================
+PGADMIN_PORT=5051                   # Host port mapped to pgAdmin
+PGADMIN_DEFAULT_EMAIL=admin@admin.com
+PGADMIN_DEFAULT_PASSWORD=postgres
 ```
 
-## Run tests
+### 🧠 Notes
+- Used when the app runs **inside Docker**.
+- Connects to the Postgres **Docker service**, not localhost.
+- Uses different port `3536` to avoid conflict with local `.env` app.
 
-```bash
-# unit tests
-$ yarn run test
+---
 
-# e2e tests
-$ yarn run test:e2e
+## 🧾 .example.env
 
-# test coverage
-$ yarn run test:cov
+```env
+# Copy contents from .env as a template for new environments.
+# Replace sensitive values (like JWT_SECRET, passwords, etc.) with placeholders.
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 🧰 Usage Instructions
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+1. Copy `.example.env` → `.env` for local setup.
+2. For Docker-based development, use `.env.docker` automatically via `docker-compose`.
+3. Never commit secrets in `.env` or `.env.docker`.
+4. Keep `.example.env` updated whenever environment variables change.
 
-```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
-```
+---
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+✅ **Tip:** Use `dotenv-flow` or `@nestjs/config` to automatically load the correct `.env` file based on `NODE_ENV`.

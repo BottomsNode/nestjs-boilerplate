@@ -8,6 +8,7 @@ import { DatabaseService } from '@config/database-connect.msg';
 import { AppDataSource } from '@config/typeorm.config';
 import { HealthModule } from '@modules/health/health.module';
 import { LoggerModule } from '@modules/logger';
+import { SharedBaseModule } from '@shared';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { LoggerModule } from '@modules/logger';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    SharedBaseModule.forRoot(),
     // Feature modules would go here
     // UserModule,
     // AuthModule,

@@ -27,7 +27,10 @@ const DB_USERNAME = getEnvVariable('DB_USERNAME');
 const DB_PASSWORD = getEnvVariable('DB_PASSWORD');
 const SWAGGER_DOCS = getEnvVariable('SWAGGER_DOCS');
 const JWT_SECRET = getEnvVariable('JWT_SECRET');
-const NODE_ENV = getEnvVariable('NODE_ENV') as 'development' | 'production' | 'test';
+const NODE_ENV = getEnvVariable('NODE_ENV') as
+  | 'development'
+  | 'production'
+  | 'test';
 const SESSION_SECRET = getEnvVariable('SESSION_SECRET');
 const API_VERSION = getEnvVariable('API_VERSION');
 const PUBLIC_KEY = getEnvVariable('PUBLIC_KEY');
@@ -58,7 +61,7 @@ export const configVariables = {
   },
   nodeEnv: NODE_ENV,
   publicKey: PUBLIC_KEY,
-  sentry:{
+  sentry: {
     dsn: SENTRY_DSN,
   },
   logger: {

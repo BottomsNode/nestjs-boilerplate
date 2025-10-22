@@ -1,1 +1,1 @@
-export * from './response-health.model'
+export * from './response-health.model';

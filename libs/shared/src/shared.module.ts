@@ -1,8 +1,26 @@
-import { Module } from '@nestjs/common';
-import { SharedService } from './shared.service';
+import { DynamicModule, Global, Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+import { JwtModule } from '@nestjs/jwt';
+import { CqrsMediator } from './cqrs/cqrs.mediator';
+// Import other shared services, guards, helpers, interceptors as needed
 
-@Module({
-  providers: [SharedService],
-  exports: [SharedService],
-})
-export class SharedModule {}
+@Global()
+@Module({})
+export class SharedBaseModule {
+  public static forRoot(): DynamicModule {
+    return {
+      module: SharedBaseModule,
+      global: true,
+      imports: [CqrsModule, JwtModule],
+      providers: [
+        CqrsMediator,
+        // add other shared providers here
+      ],
+      exports: [
+        CqrsMediator,
+        // export other shared providers for DI
+        JwtModule,
+      ],
+    };
+  }
+}
